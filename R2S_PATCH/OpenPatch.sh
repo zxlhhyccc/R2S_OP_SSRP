@@ -35,8 +35,6 @@ svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/kcptun package/le
 svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/simple-obfs package/lean/simple-obfs
 svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/v2ray-plugin package/lean/v2ray-plugin
 svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/srelay package/lean/srelay
-$(STAGING
-package/lean/v2ray-plugin/Makefile
 sed -i 's,$(STAGING,#$(STAGING,g' package/lean/v2ray-plugin/Makefile
 #清理内存
 svn co https://github.com/coolsnowwolf/lede/trunk/package/lean/luci-app-ramfree package/lean/luci-app-ramfree
