@@ -1,0 +1,49 @@
+name: R2S_OP_SSRP
+
+on:
+#  push:
+#    branches: 
+#      - master
+  schedule:
+    - cron: 0 22 * * *
+  watch:
+    types: [started]
+
+jobs:
+  build:
+    runs-on: ubuntu-18.04
+    
+    steps:
+    - name: Clone Repository
+      uses: actions/checkout@v1
+    - name: Init build dependencies
+      env:
+        DEBIAN_FRONTEND: noninteractive
+      run: |
+        docker rmi $(docker images -q)
+        sudo -E apt-get remove -y --purge azure-cli ghc zulu* hhvm llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get update -y
+        sudo -E apt-get install -y build-essential asciidoc binutils bzip2 gawk gettext git libncurses5-dev libz-dev patch unzip zlib1g-dev lib32gcc1 libc6-dev-i386 subversion flex uglifyjs git-core gcc-multilib p7zip p7zip-full msmtp libssl-dev texinfo libglib2.0-dev xmlto qemu-utils upx libelf-dev autoconf automake libtool autopoint device-tree-compiler libreadline-dev ccache curl wget vim nano g++-multilib python python3 python-pip python3-pip python-ply python3-ply haveged lrzsz scons
+        wget -O - https://raw.githubusercontent.com/friendlyarm/build-env-on-ubuntu-bionic/master/install.sh
+        sudo -E /bin/bash install.sh
+        sudo -E apt-get autoremove -y --purge
+        sudo -E apt-get clean -y
+        sudo -E rm -rf /usr/share/dotnet /etc/mysql /etc/php
+    - name: Build Stage1
+      run: |
+        sudo chown -R runner:runner /home/runner/work/R2S_OP_SSRP
+        cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP
+        /bin/bash stage1.sh
+    - name: Build Stage2
+      run: |
+        cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328/friendlywrt
+        /bin/bash OpenPatch.sh
+    - name: Build Stage3
+      run: |
+        cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328
+        ./scripts/build.sh nanopi_r2s.mk
+    - name: Upload Firmwares
+      uses: actions/upload-artifact@master
+      with:
+        name: Firmwares
+        path: /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328/scripts/sd-fuse/out
