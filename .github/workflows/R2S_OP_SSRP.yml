@@ -32,7 +32,7 @@ jobs:
       run: |
         sudo chown -R runner:runner /home/runner/work/R2S_OP_SSRP
         cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP
-        /bin/bash stage1.sh
+        /bin/bash Stage1.sh
     - name: Build Stage2
       run: |
         cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328/friendlywrt
