@@ -41,6 +41,10 @@ jobs:
       run: |
         cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328
         ./scripts/build.sh nanopi_r2s.mk
+    - name: Cleaning
+      run: |
+        cd /home/runner/work/R2S_OP_SSRP/R2S_OP_SSRP/friendlywrt-rk3328/scripts/sd-fuse/out
+        rm -rf `ls | grep -v ".img"`
     - name: Upload Firmwares
       uses: actions/upload-artifact@master
       with:
